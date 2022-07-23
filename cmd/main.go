@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -118,14 +119,21 @@ func main() {
 	for i := 0; i < len(arr); i++ {
 		current_word := childrens_language(arr[i])
 		wordlist[current_word]++
-	}
-	for i := 0; i < len(arr); i++ {
-		current_word := childrens_language(arr[i])
 		_, ok := wordlist[current_word]
 		if ok {
-			wordlist[current_word] = +1
+			wordlist[current_word]++
 		}
 	}
 
-	fmt.Println(wordlist)
+	jsonStr, err := json.Marshal(wordlist)
+	if err != nil {
+		fmt.Printf("Error: %s", err.Error())
+	} else {
+		fmt.Println(string(jsonStr))
+	}
+
+	resultOutFile, err := os.OpenFile("./result.out", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+
+	defer resultOutFile.Close()
+
 }
